@@ -143,7 +143,11 @@ int luaX_argerror(lua_State *L, int narg, const char *argname,
   const char *msg = NULL;
 
   if (argname != NULL) {
+#if LUA_VERSION_NUM < 504
     msg = lua_pushfstring(L, LUA_QS ": %s", argname, extramsg);
+#else
+    msg = lua_pushfstring(L, "%s: %s", argname, extramsg);
+#endif
   } else {
 #if LUA_VERSION_NUM >= 502
     msg = lua_pushstring(L, extramsg);
@@ -308,8 +312,10 @@ const char *luaX_status2str(int status) {
       return "syntax error";
     case LUA_ERRMEM:
       return "memory allocation error";
+#if LUA_VERSION_NUM < 504
     case LUA_ERRGCMM:
       return "garbage collector error";
+#endif
     case LUA_ERRERR:
       return "message handler error";
     default:
