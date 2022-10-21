@@ -36,9 +36,12 @@
 
 #define luaL_getsubtable luaX52_luaL_getsubtable
 
-#define luaL_newlib(L, l) (luaL_newlibtable(L, l), luaL_setfuncs(L, l, 0))
+#if !defined(luaL_newlibtable)
+#define luaL_newlibtable(L, l) \
+  (lua_createtable(L, 0, sizeof(l) / sizeof((l)[0]) - 1))
+#endif
 
-#define luaL_newlibtable(L, l) (lua_createtable(L, 0, sizeof(l)))
+#define luaL_newlib(L, l) (luaL_newlibtable(L, l), luaL_setfuncs(L, l, 0))
 
 #define luaL_requiref(L, l, f, g) luaX52_luaL_requiref(L, (l), (f), (g))
 
